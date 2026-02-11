@@ -2,6 +2,23 @@
 
 This directory contains working examples that demonstrate different retail analytics capabilities using 'degirum_retail' SDK.
 
+## Installation
+
+DeGirum hosts its own PyPI server for DeGirum packages.
+
+```bash
+pip install -i https://pkg.degirum.com degirum-retail
+```
+
+**Prerequisites:**
+
+- **AI Hub Account:** Create an account at [DeGirum AI Hub](https://hub.degirum.com/) and set up a workspace. See [Workspace Plans](https://docs.degirum.com/ai-hub/workspace-plans) for details.
+- **Authentication Token:** Set up your AI Hub token following the [token management guide](https://docs.degirum.com/pysdk/user-guide-pysdk/command-line-interface#manage-ai-hub-tokens).
+- **Python & OS:** See [DeGirum PySDK Documentation](https://docs.degirum.com/pysdk/installation) for requirements.
+- **Hardware Drivers (optional):** See [Runtimes & Drivers](https://docs.degirum.com/pysdk/runtimes-and-drivers) for hardware acceleration setup.
+
+**Quick Start:** Use `@cloud` inference to try without installing drivers locally. The Quickstart example below uses local CPU models for immediate testing.
+
 ## Available Examples
 
 ### 1. Simple Retail Tracking
@@ -58,7 +75,7 @@ python examples/gizmo_pipeline_example.py
 **File**: `retail_analyzer_simple.py`
 **Config**: `retail_analyzer_config.yaml`
 
-Batch analysis of images for person detection. Pass one or more image paths as arguments.
+Basic retail analytics example using RetailTracker pipeline to calculate zone density.
 
 ```bash
 python examples/retail_analyzer_simple.py image1.jpg image2.jpg
