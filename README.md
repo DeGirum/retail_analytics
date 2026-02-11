@@ -78,7 +78,7 @@ python examples/gizmo_pipeline_example.py
 Basic retail analytics example using RetailTracker pipeline to calculate zone density.
 
 ```bash
-python examples/retail_analyzer_simple.py image1.jpg image2.jpg
+python examples/retail_analyzer_simple.py 
 ```
 
 **Note:** Tracking examples (1–5) read the video source (file path, webcam index, or RTSP URL) from their YAML config via the `video_source` setting.
