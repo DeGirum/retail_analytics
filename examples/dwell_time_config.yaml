@@ -1,0 +1,46 @@
+# Dwell Time Analyzer Configuration
+# Tracks how long people spend in zones
+
+person_detection_model:
+  model_name: "yolov8l_coco--640x640_float_openvino_multidevice_1"
+  hardware: "OPENVINO/CPU"  # Fallback if model_name not found
+  inference_host_address: "@cloud"
+  model_zoo_url: "degirum/intel"
+
+video_source: "examples/assets/waitline.mp4"
+
+zones:
+  entrance:
+    - [27, 135]
+    - [400, 120]
+    - [400, 556]
+    - [26, 519]
+  waiting_area:
+    - [401, 135]
+    - [800, 119]
+    - [800, 556]
+    - [401, 556]
+  service_counter:
+    - [801, 135]
+    - [1200, 119]
+    - [1200, 556]
+    - [801, 556]
+
+analyzers:
+  - type: "dwell_time"
+    zones: ["entrance", "waiting_area", "service_counter"]
+    config:
+      min_duration: 2.0
+      show_annotations: true
+      label_filter: ["person"]  # Labels to track (exact case-sensitive match with model output)
+
+tracker:
+  track_thresh: 0.3
+  match_thresh: 0.8
+  track_buffer: 30
+
+zone_counter:
+  timeout_frames: 3
+  enable_zone_events: true
+  show_inzone_counters: "time"
+

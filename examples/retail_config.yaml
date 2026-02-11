@@ -1,0 +1,47 @@
+#
+# retail_config.yaml: Configuration file for simple retail tracking example
+#
+# Copyright DeGirum Corporation 2025
+# All rights reserved
+#
+# This file configures the retail tracking pipeline for the simple example.
+#
+
+# Video source (can be overridden by command line argument)
+video_source: "examples/assets/waitline.mp4"
+
+# Person detection model configuration
+person_detection_model:
+  model_name: "yolov8s_coco--640x640_float_openvino_multidevice_1"
+  inference_host_address: "@cloud"
+  model_zoo_url: "degirum/intel"
+
+# Zone definitions - polygon coordinates for each zone
+zones:
+  waiting_zone:
+    - [27, 135]
+    - [1208, 119]
+    - [1200, 556]
+    - [26, 519]
+
+# Analyzer configuration - you can enable multiple analyzers
+analyzers:
+  - type: "zone_density"
+    zones: ["waiting_zone"]
+    config:
+      max_capacity:
+        waiting_zone: 50
+      show_annotations: true
+      label_filter: ["person"]
+
+# Tracker settings
+tracker:
+  track_thresh: 0.35
+  track_buffer: 30
+  match_thresh: 0.8
+  trail_depth: 30
+
+# Zone counter settings
+zone_counter:
+  timeout_frames: 3
+  enable_zone_events: true
