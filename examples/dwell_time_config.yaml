@@ -7,7 +7,7 @@ person_detection_model:
   inference_host_address: "@cloud"
   model_zoo_url: "degirum/intel"
 
-video_source: "examples/assets/waitline.mp4"
+video_source: "assets/waitline.mp4"
 
 zones:
   entrance:
