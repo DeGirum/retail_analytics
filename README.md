@@ -11,7 +11,7 @@ This directory contains working examples that demonstrate different retail analy
 Basic retail tracking example with zone density analytics on a single zone.
 
 ```bash
-python examples/retail_tracking_simple.py <video_source>
+python examples/retail_tracking_simple.py
 ```
 
 ### 2. Zone Density Analytics
@@ -21,7 +21,7 @@ python examples/retail_tracking_simple.py <video_source>
 Monitors occupancy levels and capacity limits across multiple zones in real-time.
 
 ```bash
-python examples/zone_density_example.py <video_source>
+python examples/zone_density_example.py
 ```
 
 ### 3. Dwell Time Analytics
@@ -31,7 +31,7 @@ python examples/zone_density_example.py <video_source>
 Tracks how long people spend in zones and provides session analytics.
 
 ```bash
-python examples/dwell_time_example.py <video_source>
+python examples/dwell_time_example.py
 ```
 
 ### 4. Zone Transition Analytics
@@ -41,7 +41,7 @@ python examples/dwell_time_example.py <video_source>
 Tracks people moving between zones (e.g. left -> center -> right) and records transitions.
 
 ```bash
-python examples/zone_transition_example.py <video_source>
+python examples/zone_transition_example.py
 ```
 
 ### 5. Gizmo Pipeline (Zone Density)
@@ -51,26 +51,20 @@ python examples/zone_transition_example.py <video_source>
 Zone density analytics using the RetailTracker pipeline.
 
 ```bash
-python examples/gizmo_pipeline_example.py <video_source>
+python examples/gizmo_pipeline_example.py
 ```
 
-### 6. Simple Retail Analysis (Single Images)
+### 6. Simple Retail Analysis
 **File**: `retail_analyzer_simple.py`
 **Config**: `retail_analyzer_config.yaml`
 
-Analyze individual images for person detection.
+Batch analysis of images for person detection. Pass one or more image paths as arguments.
 
 ```bash
 python examples/retail_analyzer_simple.py image1.jpg image2.jpg
 ```
 
-## Video Source Options
-
-All tracking examples accept a `<video_source>` argument which can be:
-
-- **Video file**: `python examples/retail_tracking_simple.py path/to/video.mp4`
-- **Webcam index**: `python examples/retail_tracking_simple.py 0`
-- **RTSP URL**: `python examples/retail_tracking_simple.py rtsp://camera-ip/stream`
+**Note:** Tracking examples (1–5) read the video source (file path, webcam index, or RTSP URL) from their YAML config via the `video_source` setting.
 
 ## Configuration Examples
 
@@ -131,15 +125,14 @@ zones:
 1. **Choose an example** based on your analytics needs
 2. **Run from project root**:
    ```bash
-   cd /path/to/degirum_retail
-   python examples/zone_density_example.py path/to/video.mp4
+   cd /path/to/retail_analytics
+   python examples/zone_density_example.py
    ```
 3. **Customize configuration** by editing the corresponding YAML file
 
 ## Requirements
 
+- `degirum_retail` package installed
 - `degirum_tools` package installed
 - Webcam or video file available
 - Internet connection for cloud models
-
-All examples work without installing the `degirum_retail` package itself!
