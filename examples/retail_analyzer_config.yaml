@@ -1,0 +1,14 @@
+#
+# retail_analyzer_config.yaml: Configuration file for simple retail image analyzer
+#
+# Copyright DeGirum Corporation 2025
+# All rights reserved
+#
+# This file configures the retail image analyzer for single image processing.
+#
+
+# Person detection model configuration
+person_detection_model:
+  model_name: "yolov8s_coco--640x640_float_openvino_multidevice_1"
+  inference_host_address: "@cloud"
+  model_zoo_url: "degirum/intel"

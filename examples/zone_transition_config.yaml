@@ -1,0 +1,47 @@
+# Zone Transition Analyzer Configuration
+# Tracks zone-to-zone movements (e.g. entrance -> waiting -> service)
+
+person_detection_model:
+  model_name: "yolov8s_coco--640x640_float_openvino_multidevice_1"
+  inference_host_address: "@cloud"
+  model_zoo_url: "degirum/intel"
+
+# Video source: 0 for webcam
+video_source: 0
+
+zones:
+  zone_left:
+    - [50, 100]
+    - [400, 100]
+    - [400, 450]
+    - [50, 450]
+  zone_center:
+    - [420, 100]
+    - [860, 100]
+    - [860, 450]
+    - [420, 450]
+  zone_right:
+    - [880, 100]
+    - [1230, 100]
+    - [1230, 450]
+    - [880, 450]
+
+analyzers:
+  - type: "zone_transition"
+    zones: ["zone_left", "zone_center", "zone_right"]
+    config:
+      max_transition_time: 30.0
+      min_duration: 1.0
+      show_annotations: true
+      label_filter: ["person"]
+
+tracker:
+  track_thresh: 0.35
+  track_buffer: 30
+  match_thresh: 0.8
+  trail_depth: 30
+
+zone_counter:
+  timeout_frames: 3
+  enable_zone_events: true
+  show_inzone_counters: "time"

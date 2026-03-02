@@ -1,0 +1,44 @@
+#
+# gizmo_pipeline_config.yaml: Configuration file for gizmo pipeline example
+#
+# Copyright DeGirum Corporation 2025
+# All rights reserved
+#
+# This file configures the gizmo pipeline example with zone density analytics.
+#
+
+# Person detection model configuration
+person_detection_model:
+  model_name: "yolov8s_coco--640x640_float_openvino_multidevice_1"
+  inference_host_address: "@cloud"
+  model_zoo_url: "degirum/intel"
+
+# Zone definitions - polygon coordinates for each zone
+zones:
+  waiting_zone:
+    - [27, 135]
+    - [1208, 119]
+    - [1200, 556]
+    - [26, 519]
+
+# Analyzer configuration
+analyzers:
+  - type: "zone_density"
+    zones: ["waiting_zone"]
+    config:
+      max_capacity:
+        waiting_zone: 50
+      show_annotations: true
+      label_filter: ["person"]  # Labels to track (exact case-sensitive match with model output)
+
+# Tracker settings
+tracker:
+  track_thresh: 0.35
+  track_buffer: 30
+  match_thresh: 0.8
+  trail_depth: 30
+
+# Zone counter settings
+zone_counter:
+  timeout_frames: 3
+  enable_zone_events: true

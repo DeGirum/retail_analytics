@@ -1,23 +1,6 @@
-# retail_analytics
+# DeGirum Retail Analytics Examples
 
-This directory contains working examples that demonstrate different retail analytics capabilities using 'degirum_retail' SDK.
-
-## Installation
-
-DeGirum hosts its own PyPI server for DeGirum packages.
-
-```bash
-pip install -i https://pkg.degirum.com degirum-retail
-```
-
-**Prerequisites:**
-
-- **AI Hub Account:** Create an account at [DeGirum AI Hub](https://hub.degirum.com/) and set up a workspace. See [Workspace Plans](https://docs.degirum.com/ai-hub/workspace-plans) for details.
-- **Authentication Token:** Set up your AI Hub token following the [token management guide](https://docs.degirum.com/pysdk/user-guide-pysdk/command-line-interface#manage-ai-hub-tokens).
-- **Python & OS:** See [DeGirum PySDK Documentation](https://docs.degirum.com/pysdk/installation) for requirements.
-- **Hardware Drivers (optional):** See [Runtimes & Drivers](https://docs.degirum.com/pysdk/runtimes-and-drivers) for hardware acceleration setup.
-
-**Quick Start:** Use `@cloud` inference to try without installing drivers locally. The Quickstart example below uses local CPU models for immediate testing.
+This directory contains working examples that demonstrate different retail analytics capabilities using the high-level DeGirum Retail SDK abstractions.
 
 ## Available Examples
 
@@ -28,7 +11,7 @@ pip install -i https://pkg.degirum.com degirum-retail
 Basic retail tracking example with zone density analytics on a single zone.
 
 ```bash
-python examples/retail_tracking_simple.py
+python examples/retail_tracking_simple.py <video_source>
 ```
 
 ### 2. Zone Density Analytics
@@ -38,7 +21,7 @@ python examples/retail_tracking_simple.py
 Monitors occupancy levels and capacity limits across multiple zones in real-time.
 
 ```bash
-python examples/zone_density_example.py
+python examples/zone_density_example.py <video_source>
 ```
 
 ### 3. Dwell Time Analytics
@@ -48,7 +31,7 @@ python examples/zone_density_example.py
 Tracks how long people spend in zones and provides session analytics.
 
 ```bash
-python examples/dwell_time_example.py
+python examples/dwell_time_example.py <video_source>
 ```
 
 ### 4. Zone Transition Analytics
@@ -58,7 +41,7 @@ python examples/dwell_time_example.py
 Tracks people moving between zones (e.g. left -> center -> right) and records transitions.
 
 ```bash
-python examples/zone_transition_example.py
+python examples/zone_transition_example.py <video_source>
 ```
 
 ### 5. Gizmo Pipeline (Zone Density)
@@ -68,20 +51,26 @@ python examples/zone_transition_example.py
 Zone density analytics using the RetailTracker pipeline.
 
 ```bash
-python examples/gizmo_pipeline_example.py
+python examples/gizmo_pipeline_example.py <video_source>
 ```
 
-### 6. Simple Retail Analysis
+### 6. Simple Retail Analysis (Single Images)
 **File**: `retail_analyzer_simple.py`
 **Config**: `retail_analyzer_config.yaml`
 
-Basic retail analytics example using RetailTracker pipeline to calculate zone density.
+Analyze individual images for person detection.
 
 ```bash
-python examples/retail_analyzer_simple.py 
+python examples/retail_analyzer_simple.py image1.jpg image2.jpg
 ```
 
-**Note:** Tracking examples (1–5) read the video source (file path, webcam index, or RTSP URL) from their YAML config via the `video_source` setting.
+## Video Source Options
+
+All tracking examples accept a `<video_source>` argument which can be:
+
+- **Video file**: `python examples/retail_tracking_simple.py path/to/video.mp4`
+- **Webcam index**: `python examples/retail_tracking_simple.py 0`
+- **RTSP URL**: `python examples/retail_tracking_simple.py rtsp://camera-ip/stream`
 
 ## Configuration Examples
 
@@ -142,14 +131,15 @@ zones:
 1. **Choose an example** based on your analytics needs
 2. **Run from project root**:
    ```bash
-   cd /path/to/retail_analytics
-   python examples/zone_density_example.py
+   cd /path/to/degirum_retail
+   python examples/zone_density_example.py path/to/video.mp4
    ```
 3. **Customize configuration** by editing the corresponding YAML file
 
 ## Requirements
 
-- `degirum_retail` package installed
 - `degirum_tools` package installed
 - Webcam or video file available
 - Internet connection for cloud models
+
+All examples work without installing the `degirum_retail` package itself!
