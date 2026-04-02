@@ -1,0 +1,9 @@
+# Dashboard dependencies (in addition to event_manager_integration base)
+# Install: pip install -r requirements-dashboard.txt
+nicegui>=1.4.0
+requests
+plotly>=5.0.0
+pyyaml>=6.0
+
+# For webhook /ask (LLM analysis): pip install pandas openai
+# Set OPENAI_API_KEY for LLM answers

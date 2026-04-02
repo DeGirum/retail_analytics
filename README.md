@@ -83,6 +83,18 @@ python examples/retail_analyzer_simple.py
 
 **Note:** Tracking examples (1–5) read the video source (file path, webcam index, or RTSP URL) from their YAML config via the `video_source` setting.
 
+### 7. Event Manager Integration
+**Folder**: `examples/event_manager_integration/`
+
+Dwell time with zone entry/exit events emitted via EventManager (WebhookPlugin). Requires `degirum-event-management`, `flask`, `requests`.
+
+```bash
+cd examples/event_manager_integration
+python webhook_server.py          # Terminal 1
+python dwell_time_with_events_example.py  # Terminal 2
+python event_collector.py         # Terminal 3 (optional)
+```
+
 ## Configuration Examples
 
 ### Zone Density Configuration

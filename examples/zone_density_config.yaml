@@ -1,50 +1,57 @@
-# Zone Density Analyzer Configuration
-# Tracks occupancy levels and density in zones
-
 person_detection_model:
-  model_name: "yolov8s_coco--640x640_float_openvino_multidevice_1"
-  inference_host_address: "@cloud"
-  model_zoo_url: "degirum/intel"
-
-# Video source options:
-# 0 for webcam, or path to video file
-video_source: "examples/assets/waitline.mp4"
-
+  model_name: yolov8s_coco--640x640_float_openvino_multidevice_1
+  inference_host_address: '@cloud'
+  model_zoo_url: degirum/intel
+video_source: ../assets/waitline.mp4
 zones:
   entrance_area:
-    - [100, 200]
-    - [400, 200]
-    - [400, 500]
-    - [100, 500]
+  - - 100
+    - 200
+  - - 400
+    - 200
+  - - 400
+    - 500
+  - - 100
+    - 500
   waiting_zone:
-    - [401, 200]
-    - [800, 200]
-    - [800, 500]
-    - [401, 500]
+  - - 401
+    - 200
+  - - 800
+    - 200
+  - - 800
+    - 500
+  - - 401
+    - 500
   service_area:
-    - [801, 200]
-    - [1100, 200]
-    - [1100, 500]
-    - [801, 500]
-
+  - - 801
+    - 200
+  - - 1100
+    - 200
+  - - 1100
+    - 500
+  - - 801
+    - 500
 analyzers:
-  - type: "zone_density"
-    zones: ["entrance_area", "waiting_zone", "service_area"]
-    config:
-      max_capacity:
-        entrance_area: 5
-        waiting_zone: 15
-        service_area: 8
-      show_annotations: true
-      label_filter: ["person"]  # Labels to track (exact case-sensitive match with model output)
-
+- type: zone_density
+  zones:
+  - entrance_area
+  - waiting_zone
+  - service_area
+  config:
+    max_capacity:
+      entrance_area: 5
+      waiting_zone: 15
+      service_area: 8
+    show_annotations: true
+    label_filter:
+    - person
+    snapshot_interval_seconds: 5.0
 tracker:
   track_thresh: 0.35
   track_buffer: 30
   match_thresh: 0.8
   trail_depth: 30
-
 zone_counter:
   timeout_frames: 3
   enable_zone_events: true
-  show_inzone_counters: "count"
+  show_inzone_counters: time
