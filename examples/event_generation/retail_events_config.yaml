@@ -1,0 +1,166 @@
+# Retail Events Pipeline Configuration
+#
+# Uses degirum_events YAML schema extended with an 'analyzers' section for
+# retail analytics (dwell time, zone density, zone transitions).
+#
+# Run: python retail_events_example.py [video_source]
+#
+# Schema notes:
+#   zones:   list format  (id + coordinates)  — degirum_events convention
+#   model:   name + inference_host            — degirum_events convention
+# These differ from RetailTrackingConfig (dict zones, person_detection_model key).
+#
+# Retail-specific metrics and their required analyzer:
+#   DwellTime      → dwell_time    analyzer
+#   OccupancyRate  → zone_density  analyzer
+#   DensityChange  → zone_density  analyzer
+#   ZoneTransition → zone_transition analyzer
+
+stream:
+  source: ../assets/waitline.mp4
+
+model:
+  name: yolov8s_coco--640x640_float_openvino_multidevice_1
+  inference_host: "@cloud"
+  zoo_url: degirum/intel
+
+zones:
+  - id: entrance_area
+    coordinates:
+      - [27, 135]
+      - [400, 120]
+      - [400, 556]
+      - [26, 519]
+  - id: waiting_zone
+    coordinates:
+      - [401, 135]
+      - [800, 119]
+      - [800, 556]
+      - [401, 556]
+  - id: service_area
+    coordinates:
+      - [801, 135]
+      - [1200, 119]
+      - [1200, 556]
+      - [801, 556]
+
+# ── Event definitions ─────────────────────────────────────────────────────────
+#
+# Standard degirum_events metrics (ZoneCounter output, no extra analyzer needed):
+#   ObjectCount, ZoneCount, ZoneOccupancy, ZoneTraffic, AllZonesOccupancy
+#
+# Retail-specific metrics (require matching entry in 'analyzers' section below):
+#   DwellTime, OccupancyRate, DensityChange, ZoneTransition
+
+events:
+  # Alert when more than 5 people are waiting
+  - id: queue_overflow
+    metric: ZoneCount
+    zone: waiting_zone
+    condition: greater_than
+    threshold: 5
+    firing: on_start_and_end
+    cooldown: [30, seconds]
+    severity: warning
+
+  # Alert when average dwell time in waiting zone exceeds 60 seconds
+  - id: long_wait_alert
+    metric: DwellTime
+    zone: waiting_zone
+    measure: avg_dwell_time
+    condition: greater_than
+    threshold: 60
+    firing: on_start_and_end
+    cooldown: [60, seconds]
+    severity: warning
+
+  # Alert when service area exceeds 75% of max capacity
+  - id: zone_near_capacity
+    metric: OccupancyRate
+    zone: service_area
+    condition: greater_than
+    threshold: 75
+    firing: on_start_and_end
+    cooldown: [30, seconds]
+    severity: error
+
+  # Fire each time a person moves from waiting_zone to service_area
+  - id: customer_served
+    metric: ZoneTransition
+    from_zone: waiting_zone
+    to_zone: service_area
+    firing: on_occurrence
+    severity: info
+
+  # Fire when entrance headcount jumps by 3 or more in one frame
+  - id: entrance_spike
+    metric: DensityChange
+    zone: entrance_area
+    min_change: 3
+    firing: on_occurrence
+    severity: info
+
+  # Periodic zone count snapshot every 30 seconds
+  - id: queue_snapshot
+    metric: ZoneCount
+    zone: waiting_zone
+    firing: schedule
+    schedule: [30, seconds]
+
+event_connectors:
+  # Print all events to stdout (useful during development)
+  - id: console_out
+    type: console
+    events:
+      - queue_overflow
+      - long_wait_alert
+      - zone_near_capacity
+      - customer_served
+      - entrance_spike
+      - queue_snapshot
+
+  # Forward alert-level events to webhook receiver
+  # Start webhook_server.py in a separate terminal before running
+  - id: webhook_out
+    type: webhook
+    url: http://localhost:5001/events
+    events:
+      - queue_overflow
+      - long_wait_alert
+      - zone_near_capacity
+      - customer_served
+      - entrance_spike
+
+# ── Retail analyzers ──────────────────────────────────────────────────────────
+#
+# Required for DwellTime, OccupancyRate, DensityChange, and ZoneTransition
+# metrics. Zone IDs must match entries in 'zones' above.
+#
+# snapshot_interval_seconds: when RetailEventsApplication is created with a
+# snapshot_callback, it fires periodically with per-zone analytics stats
+# (useful for pushing live stats to a dashboard alongside event alerts).
+
+analyzers:
+  - type: dwell_time
+    zones: [entrance_area, waiting_zone, service_area]
+    config:
+      min_duration: 2
+      snapshot_interval_seconds: 5
+
+  - type: zone_density
+    zones: [entrance_area, waiting_zone, service_area]
+    config:
+      max_capacity:
+        entrance_area: 5
+        waiting_zone: 15
+        service_area: 8
+      snapshot_interval_seconds: 5
+
+  - type: zone_transition
+    zones: [entrance_area, waiting_zone, service_area]
+    config:
+      max_transition_time: 30
+      min_duration: 2
+
+zone_counter:
+  timeout_frames: 3
